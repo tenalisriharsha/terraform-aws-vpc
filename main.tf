@@ -86,9 +86,10 @@ resource "aws_nat_gateway" "this" {
 resource "aws_subnet" "private" {
   count = length(var.private_subnets)
 
-  vpc_id            = aws_vpc.this.id
-  cidr_block        = var.private_subnets[count.index]
-  availability_zone = var.azs[count.index]
+  vpc_id                  = aws_vpc.this.id
+  cidr_block              = var.private_subnets[count.index]
+  availability_zone       = var.azs[count.index]
+  map_public_ip_on_launch = false
 
   tags = merge(local.common_tags, {
     Name = "${var.name}-private-${var.azs[count.index]}"
