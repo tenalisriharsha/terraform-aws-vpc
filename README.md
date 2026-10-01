@@ -8,6 +8,24 @@ The module is self-contained, fully tested with Terraform's native test
 framework (no AWS credentials required), and ready to drop into a real
 infrastructure stack.
 
+## Preview
+
+Real output from the module's own commands (no AWS account needed — the
+test suite runs against Terraform's mocked provider):
+
+![terraform test: all 11 native tests passing](docs/screenshots/03-test.png)
+
+<details>
+<summary>More views</summary>
+
+![terraform init](docs/screenshots/01-init.png)
+
+![terraform validate](docs/screenshots/02-validate.png)
+
+![terraform validate -json, piped through python3 -m json.tool](docs/screenshots/04-validate-json.png)
+
+</details>
+
 ## What it creates
 
 - **VPC** with DNS support/hostnames enabled
