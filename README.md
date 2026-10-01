@@ -24,6 +24,10 @@ test suite runs against Terraform's mocked provider):
 
 ![terraform validate -json, piped through python3 -m json.tool](docs/screenshots/04-validate-json.png)
 
+![examples/complete: a 3-AZ production-style usage of the module, validating clean](docs/screenshots/05-complete-example.png)
+
+![Input-validation guardrails rejecting a bad CIDR and too many AZs](docs/screenshots/06-input-validation.png)
+
 </details>
 
 ## What it creates
