@@ -8,6 +8,16 @@ resource "aws_vpc" "this" {
   enable_dns_hostnames = var.enable_dns_hostnames
 
   tags = merge(local.common_tags, { Name = var.name })
+
+  lifecycle {
+    # Subnets, NAT gateways and route tables are all indexed by AZ, so a length
+    # mismatch would otherwise surface as a raw "Invalid index" error or as
+    # extra NAT gateways with no private subnet behind them.
+    precondition {
+      condition     = length(var.public_subnets) == length(var.azs) && length(var.private_subnets) == length(var.azs)
+      error_message = "public_subnets and private_subnets must each have exactly one CIDR per AZ (got ${length(var.azs)} azs, ${length(var.public_subnets)} public_subnets, ${length(var.private_subnets)} private_subnets)."
+    }
+  }
 }
 
 # -----------------------------------------------------------------------------

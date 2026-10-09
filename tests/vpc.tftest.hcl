@@ -216,3 +216,39 @@ run "rejects_too_many_azs" {
     var.azs,
   ]
 }
+
+run "rejects_fewer_public_subnets_than_azs" {
+  command = plan
+
+  variables {
+    public_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
+  }
+
+  expect_failures = [
+    aws_vpc.this,
+  ]
+}
+
+run "rejects_more_private_subnets_than_azs" {
+  command = plan
+
+  variables {
+    private_subnets = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24", "10.0.104.0/24"]
+  }
+
+  expect_failures = [
+    aws_vpc.this,
+  ]
+}
+
+run "rejects_fewer_private_subnets_than_azs" {
+  command = plan
+
+  variables {
+    private_subnets = ["10.0.101.0/24"]
+  }
+
+  expect_failures = [
+    aws_vpc.this,
+  ]
+}
