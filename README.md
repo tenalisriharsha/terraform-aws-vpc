@@ -1,5 +1,7 @@
 # terraform-aws-vpc
 
+[![CI](https://github.com/tenalisriharsha/terraform-aws-vpc/actions/workflows/ci.yml/badge.svg)](https://github.com/tenalisriharsha/terraform-aws-vpc/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 A production-style Terraform module that builds an AWS VPC with public and
 private subnets across multiple availability zones, NAT gateway egress,
 VPC flow logs, and least-privilege IAM roles.
