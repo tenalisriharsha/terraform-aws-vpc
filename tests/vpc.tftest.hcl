@@ -252,3 +252,31 @@ run "rejects_fewer_private_subnets_than_azs" {
     aws_vpc.this,
   ]
 }
+
+run "rejects_subnet_cidr_outside_vpc_range" {
+  command = plan
+
+  variables {
+    azs             = ["us-east-1a"]
+    public_subnets  = ["192.168.1.0/24"]
+    private_subnets = ["10.0.101.0/24"]
+  }
+
+  expect_failures = [
+    aws_vpc.this,
+  ]
+}
+
+run "rejects_overlapping_public_private_subnets" {
+  command = plan
+
+  variables {
+    azs             = ["us-east-1a"]
+    public_subnets  = ["10.0.1.0/24"]
+    private_subnets = ["10.0.1.0/24"]
+  }
+
+  expect_failures = [
+    aws_vpc.this,
+  ]
+}
