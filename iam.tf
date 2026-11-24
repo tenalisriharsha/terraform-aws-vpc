@@ -39,7 +39,7 @@ data "aws_iam_policy_document" "flow_logs_write" {
       "logs:DescribeLogGroups",
       "logs:DescribeLogStreams",
     ]
-    resources = ["*"]
+    resources = var.enable_flow_logs ? ["${aws_cloudwatch_log_group.flow_logs[0].arn}:*"] : []
   }
 }
 
