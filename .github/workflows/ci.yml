@@ -30,3 +30,40 @@ jobs:
       - run: terraform test
       - run: terraform -chdir=examples/complete init -backend=false -input=false
       - run: terraform -chdir=examples/complete validate
+
+  # Every other job above only runs `plan`/`validate` against a mocked
+  # provider, so attributes AWS computes at apply time (resource IDs, ARNs,
+  # EIP addresses) are never checked. This job applies and destroys the
+  # complete example against a LocalStack container to cover that gap
+  # without needing real AWS credentials.
+  localstack-apply:
+    runs-on: ubuntu-latest
+    services:
+      localstack:
+        image: localstack/localstack:3
+        ports:
+          - 4566:4566
+        env:
+          SERVICES: ec2,iam,logs,sts
+        options: >-
+          --health-cmd="curl -sf http://localhost:4566/_localstack/health"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=15
+    env:
+      AWS_ENDPOINT_URL: http://localhost:4566
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: us-east-1
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.16.5"
+          terraform_wrapper: false
+
+      - run: terraform -chdir=examples/complete init -backend=false -input=false
+      - run: terraform -chdir=examples/complete apply -auto-approve
+      - if: always()
+        run: terraform -chdir=examples/complete destroy -auto-approve
