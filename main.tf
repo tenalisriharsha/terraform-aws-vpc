@@ -17,6 +17,19 @@ resource "aws_vpc" "this" {
       condition     = length(var.public_subnets) == length(var.azs) && length(var.private_subnets) == length(var.azs)
       error_message = "public_subnets and private_subnets must each have exactly one CIDR per AZ (got ${length(var.azs)} azs, ${length(var.public_subnets)} public_subnets, ${length(var.private_subnets)} private_subnets)."
     }
+
+    # Without this, a subnet CIDR outside cidr_block or overlapping another
+    # subnet plans cleanly and only fails at apply time with a raw AWS
+    # InvalidSubnet.Range/InvalidSubnet.Conflict error.
+    precondition {
+      condition     = length(local.subnets_outside_vpc_cidr) == 0
+      error_message = "The following subnets fall outside var.cidr_block (${var.cidr_block}): ${join(", ", local.subnets_outside_vpc_cidr)}."
+    }
+
+    precondition {
+      condition     = length(local.overlapping_subnet_pairs) == 0
+      error_message = "public_subnets and private_subnets must not overlap each other. Overlapping pairs: ${join("; ", local.overlapping_subnet_pairs)}."
+    }
   }
 }
 
