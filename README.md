@@ -96,8 +96,9 @@ each command shown and renders its actual output:
 
 ## Tech stack
 
-- Terraform `>= 1.6` to consume the module; `>= 1.7` to run `terraform validate`
-  or `terraform test` in this repository (the test file uses `mock_provider`)
+- Terraform `>= 1.7` (the repository's `required_version` constraint; the test
+  file uses `mock_provider`, a 1.7+ feature, so `terraform init` itself
+  rejects older binaries with a clear version error)
 - AWS provider `>= 5.0, < 6.0`
 - Native `terraform test` (`.tftest.hcl`) with a mocked AWS provider
 
