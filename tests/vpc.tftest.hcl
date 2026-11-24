@@ -143,6 +143,28 @@ run "flow_logs_enabled_by_default" {
   }
 }
 
+run "flow_logs_policy_is_scoped_to_log_group" {
+  command = plan
+
+  override_resource {
+    target          = aws_cloudwatch_log_group.flow_logs[0]
+    override_during = plan
+    values = {
+      arn = "arn:aws:logs:us-east-1:123456789012:log-group:/test/flow-logs"
+    }
+  }
+
+  assert {
+    condition     = !contains(tolist(data.aws_iam_policy_document.flow_logs_write.statement)[0].resources, "*")
+    error_message = "The flow-logs write policy must not grant access to all resources (\"*\")."
+  }
+
+  assert {
+    condition     = contains(tolist(data.aws_iam_policy_document.flow_logs_write.statement)[0].resources, "${aws_cloudwatch_log_group.flow_logs[0].arn}:*")
+    error_message = "The flow-logs write policy must be scoped to the flow logs log group ARN."
+  }
+}
+
 run "flow_logs_can_be_disabled" {
   command = plan
 
