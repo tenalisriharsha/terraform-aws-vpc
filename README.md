@@ -86,7 +86,8 @@ each command shown and renders its actual output:
   shell access through Session Manager with CloudTrail auditing and no exposed
   port 22.
 - **Fail fast on bad input.** Variable validation rejects a malformed VPC
-  CIDR, empty or over-long names, and AZ counts outside 1–6; preconditions
+  CIDR, empty or over-long names, names with characters outside
+  `[\w+=,.@-]`, and AZ counts outside 1–6; preconditions
   reject subnet lists that do not have exactly one CIDR per AZ, subnet CIDRs
   that fall outside `cidr_block`, and public/private subnet CIDRs that
   overlap each other. All of these fail at plan time.
