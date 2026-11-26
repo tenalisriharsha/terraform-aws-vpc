@@ -6,6 +6,11 @@ variable "name" {
     condition     = length(var.name) > 0 && length(var.name) <= 32
     error_message = "name must be between 1 and 32 characters."
   }
+
+  validation {
+    condition     = can(regex("^[\\w+=,.@-]+$", var.name))
+    error_message = "name must match [\\w+=,.@-] (letters, digits, underscores, and the characters +=,.@-) so it is valid in downstream IAM role and CloudWatch Logs group names."
+  }
 }
 
 variable "cidr_block" {
