@@ -280,3 +280,15 @@ run "rejects_overlapping_public_private_subnets" {
     aws_vpc.this,
   ]
 }
+
+run "rejects_name_with_invalid_characters" {
+  command = plan
+
+  variables {
+    name = "team alpha!"
+  }
+
+  expect_failures = [
+    var.name,
+  ]
+}
